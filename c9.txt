@@ -1,0 +1,66 @@
+﻿package medidor.rpe.com.medidordetempumidade.activity.getters_setters;
+
+/**
+ * Created by Usuário on 07/06/2018.
+ */
+
+public class parametros {
+    String Temperature;
+    String Humidity;
+    String Dados1;
+    String Dados2;
+    String Dados3;
+
+    public String getDados2() {
+        return Dados2;
+    }
+
+    public void setDados2(String dados2) {
+        Dados2 = dados2;
+    }
+
+    public String getDados3() {
+        return Dados3;
+    }
+
+    public void setDados3(String dados3) {
+        Dados3 = dados3;
+    }
+
+    String cor;
+
+    public String getCor() {
+        return cor;
+    }
+
+    public void setCor(String cor) {
+        this.cor = cor;
+    }
+
+    public parametros() {
+    }
+
+    public String getDados1() {
+        return Dados1;
+    }
+
+    public void setDados1(String dados) {
+        Dados1 = dados;
+    }
+
+    public String getTemperature() {
+        return Temperature;
+    }
+
+    public void setTemperature(String temperature) {
+        Temperature = temperature;
+    }
+
+    public String getHumidity() {
+        return Humidity;
+    }
+
+    public void setHumidity(String humidity) {
+        Humidity = humidity;
+    }
+}

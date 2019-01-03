@@ -1,0 +1,143 @@
+﻿package medidor.rpe.com.medidordetempumidade.activity;
+
+import android.content.Intent;
+import android.icu.text.DecimalFormat;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import medidor.rpe.com.medidordetempumidade.R;
+import medidor.rpe.com.medidordetempumidade.activity.getters_setters.parametros;
+import medidor.rpe.com.medidordetempumidade.activity.helper.ConfiguracaoFirebase;
+import medidor.rpe.com.medidordetempumidade.activity.helper.ProbChuva;
+
+public class MainActivity extends AppCompatActivity {
+    private TextView temp, umid, prob;
+    private android.support.v7.widget.Toolbar toolbar;
+    private DatabaseReference firebase;
+    private ConstraintLayout layout;
+    private String temperature="0", humidity="0";
+    private TextView Data;
+    DecimalFormat df = new DecimalFormat("0.00");
+    parametros parametros = new parametros();
+    ProbChuva probabilidade = new ProbChuva();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+       toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+       temp = (TextView) findViewById(R.id.Temperature);
+       umid = (TextView) findViewById(R.id.Humidity);
+       layout = (ConstraintLayout) findViewById(R.id.Clayout);
+       prob = (TextView) findViewById(R.id.chover);
+       Data = (TextView) findViewById(R.id.data);
+       setSupportActionBar(toolbar);
+       getSupportActionBar().setTitle("Medidor Temp/Umidade");
+        Calendar c = Calendar.getInstance();
+        Date data = c.getTime();
+        DateFormat formataData = DateFormat.getDateInstance();
+        Data.setText(formataData.format(data));
+       firebase = ConfiguracaoFirebase.getFirebase();
+        firebase.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.exists()) {
+                    String value1 = dataSnapshot.getValue().toString();
+                    switch(dataSnapshot.getKey()) {
+                        case "Temperature":
+                            temp.setText(value1);
+                            break;
+                        case "Humidity":
+                            humidity = value1;
+                            umid.setText(value1);
+                            break;
+                    }
+
+                        probabilidade.CalcProb( humidity);
+                        prob.setText(df.format(probabilidade.getProb()));
+                        firebase.child("Probability: ").setValue(df.format(probabilidade.getProb()));
+                    if(probabilidade.getProb()!=Float.valueOf(humidity))
+                        {
+
+                        }else
+                            {
+                                temperature="0";
+                                humidity="0";
+                            }
+
+                }else
+                {
+                    firebase.removeEventListener(this);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+    });
+
+    }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+       switch(id)
+       {
+           case R.id.action_settings:
+               Intent intent = new Intent(getApplicationContext(),settings.class);
+               startActivity(intent);
+               break;
+           case R.id.action_bar:
+               Intent intent1 = new Intent(getApplicationContext(),historico.class);
+               startActivity(intent1);
+               break;
+       }
+        return super.onOptionsItemSelected(item);
+    }
+}

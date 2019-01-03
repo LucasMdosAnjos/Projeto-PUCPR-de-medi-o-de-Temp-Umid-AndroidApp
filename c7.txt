@@ -1,0 +1,20 @@
+﻿package medidor.rpe.com.medidordetempumidade.activity.helper;
+
+import medidor.rpe.com.medidordetempumidade.activity.getters_setters.parametros;
+
+/**
+ * Created by Usuário on 12/06/2018.
+ */
+
+public class ProbChuva {
+    Float prob;
+    parametros parametros = new parametros();
+
+    public Float getProb() {
+        return prob;
+    }
+    public void CalcProb(String umid)
+    {
+        prob = Float.valueOf(umid) * 0.104608267f; //Porcentagem de umidade como nível de confiança e 0.25419809 como área da PUCPR;
+    }
+}
